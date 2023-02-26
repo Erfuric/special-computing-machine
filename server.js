@@ -23,7 +23,7 @@ function connectToDb() {
   
 // Terminate the database connection
 function terminateDbConnection() {
-    connection.end((err) => {
+    db.end((err) => {
         if (err) throw err;
         console.log('Connection to the database terminated.');
     });
@@ -89,7 +89,7 @@ function viewDepartments() {
 
 // View all roles
 function viewRoles() {
-    db.query('SELECT role.id, role.title, department.name AS department, role.salary FROM role LEFT JOIN department ON role.department_id = department.id', (err, res) => {
+    db.query('SELECT role.id, role.title, department_id AS department, role.salary FROM role LEFT JOIN department ON role.department_id = department.id', (err, res) => {
     if (err) throw err;
     console.table(res);
     start();
@@ -98,7 +98,7 @@ function viewRoles() {
 
 // View all employees
 function viewEmployees() {
-    db.query(`SELECT employee.id, employee.first_name, employee.last_name, role.title AS title, department.name AS department, role.salary AS salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON employee.manager_id = manager.id`, (err, res) => {
+    db.query(`SELECT employee.id, employee.first_name, employee.last_name, role.title AS title, department_id AS department, role.salary AS salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON employee.manager_id = manager.id`, (err, res) => {
     if (err) throw err;
     console.table(res);
     start();
@@ -110,17 +110,18 @@ function addDepartment() {
   inquirer.prompt([
     {
       type: 'input',
-      name: 'name',
+      name: 'department_name',
       message: 'What is the name of the department?'
     }
   ]).then(answer => {
-    db.query('INSERT INTO department SET ?', { name: answer.name }, (err, res) => {
+    db.query('INSERT INTO department SET ?', { department_name: answer.department_name }, (err, res) => {
       if (err) throw err;
       console.log(`${res.affectedRows} department added successfully!`);
       start();
     });
   });
 }
+
 
 // Add a role
 function addRole() {
@@ -141,10 +142,10 @@ function addRole() {
       type: 'list',
       name: 'department',
       message: 'Which department does the role belong to?',
-      choices: res.map(department => department.name)
+      choices: res.map(department => department.id)
     }
   ]).then(answer => {
-    const department = res.find(department => department.name === answer.department);
+    const department = res.find(department => department.id === answer.department);
     db.query('INSERT INTO role SET ?', { title: answer.title, salary: answer.salary, department_id: department.id }, (err, res) => {
       if (err) throw err;
       console.log(`${res.affectedRows} role added successfully!`);

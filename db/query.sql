@@ -2,7 +2,7 @@
 SELECT id, department_name FROM department;
 
 -- View all roles
-SELECT role.id, title, salary, department_name 
+SELECT role.id, title, salary, department_id, department_name 
 FROM role 
 JOIN department ON role.department_id = department.id;
 
@@ -49,8 +49,3 @@ JOIN role ON e.role_id = role.id
 JOIN department ON role.department_id = department.id
 LEFT JOIN employee AS m ON e.manager_id = m.id
 WHERE department.id = <department_id>;
-
--- Delete departments, roles and employees
-DELETE FROM department WHERE id = <department_id>;
-DELETE FROM role WHERE id = <role_id>;
-DELETE FROM employee WHERE id = <employee_id>;
