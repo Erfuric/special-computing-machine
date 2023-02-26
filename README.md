@@ -32,7 +32,8 @@ npm install console.table
 
 # Video Demonstation
 
-PLACEHOLDER
+[video tutorial.webm](https://user-images.githubusercontent.com/17615940/221401371-f989d16a-74e7-49d9-bd7e-02f2f730b4e0.webm)
+
 
 # Credits
 
